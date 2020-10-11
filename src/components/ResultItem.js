@@ -1,8 +1,13 @@
 import React from 'react'
-import { View, Text, Linking, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import { View, Text, Linking, StyleSheet, TouchableHighlight } from 'react-native'
 
-const ResultItem = (item) => {
-   item = item.item
+const ResultItem = ({ item, navigation }) => {
+
+   loadArticle = (id) => {
+      console.log("inside load article & id", id)
+      navigation.navigate("Article")
+   }
+
    calculateTime = (creationDate) => {
       var diffInTime = new Date() - new Date(creationDate)
       var days = Math.floor(diffInTime / (1000 * 24 * 3600))
@@ -31,8 +36,9 @@ const ResultItem = (item) => {
    return (
       <View style={styles.itemView}>
          <View style={styles.mainTextView}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text></Text>
+            <TouchableHighlight>
+               <Text style={styles.title} onPress={() => { loadArticle(item.objectID) }}>{item.title}</Text>
+            </TouchableHighlight>
          </View>
          <View style={styles.subTextView}>
             <View><Text style={[styles.distanceBetween, styles.greyText]}>{points}</Text></View>

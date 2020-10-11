@@ -12,7 +12,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { createStore } from "redux"
 import { Provider } from "react-redux"
 import HomeScreen from './screens/HomeScreen'
-import SearchScreen from './screens/SearchScreen'
+import ArticleScreen from './screens/ArticleScreen'
 import Reducer from './redux/Reducer'
 
 
@@ -24,8 +24,13 @@ const App = () => {
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Search" component={SearchScreen} />
+          <Stack.Screen name="Your Articles" component={HomeScreen} options={{
+            title: "Article List", headerTitleStyle: {
+              textAlign: "center",
+              color: "#000"
+            }
+          }} />
+          <Stack.Screen name="Article" component={ArticleScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

@@ -1,43 +1,43 @@
-import React from 'react';
-import { StyleSheet, View, FlatList, Button, Text } from 'react-native';
+import React from 'react'
+import { StyleSheet, View, FlatList, Text, TouchableHighlight, ActivityIndicator, Dimensions, StatusBar } from 'react-native'
+import { connect } from 'react-redux'
 import ResultItem from '../components/ResultItem'
+import { mapStateToProps, mapDispatchToProps } from '../redux/MappingFunctions'
+import { fetchData } from '../connection/FetchData'
+
 
 class HomeScreen extends React.Component {
 
-   constructor(props) {
-      super(props)
-      this.state = {
-         data: []
-      }
+   async getArticles(page) {
+      let response = await fetchData(page)
+      if (response.hits.length != 0)
+         this.props.updateHomeScreenData(response)
    }
 
-   updateData = (data) => {
-      this.setState({ data })
-   }
-
-   async componentDidMount() {
-      let response = await fetch("https://hn.algolia.com/api/v1/search?tags=front_page")
-      response = await response.json()
-      index = 0
-      this.updateData(response.hits)
+   componentDidMount() {
+      if (Object.keys(this.props.data).length === 0)
+         this.getArticles(0)
    }
 
    render() {
-      return this.state.data.length === 0 ? <View style={styles.screenView}><Text style={styles.loadText}>Loading..</Text></View> : <View style={styles.screenView}>
+      return Object.keys(this.props.data).length === 0 ? <View style={styles.screenView}><ActivityIndicator size="large" color="#0000ff" /></View> : <View style={styles.screenView}>
          <FlatList
-            data={this.state.data}
-            renderItem={({ item, index }) => {
+            style={{ marginHorizontal: 10, marginVertical: 5 }}
+            data={this.props.data.hits}
+            renderItem={({ item }) => {
                return <View key={item.objectID} style={styles.listStyle}>
-                  <ResultItem item={item} />
+                  <ResultItem item={item} navigation={this.props.navigation} />
                </View>
             }}
          />
-         <Button title="More" onPress={() => { this.props.navigation.navigate("Search") }} />
+         <TouchableHighlight underlayColor="white" onPress={() => { this.getArticles(parseInt(this.props.data.page) + 1) }} style={styles.button} ><Text style={styles.buttonText}>More</Text></TouchableHighlight>
       </View>
    }
 }
 
-export default HomeScreen
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)
 
 
 const styles = StyleSheet.create({
@@ -55,8 +55,18 @@ const styles = StyleSheet.create({
       textAlign: "right",
    },
    loadText: {
-      fontSize: 60,
+      fontSize: 30,
       textAlignVertical: "center"
+   },
+   button: {
+      alignSelf: "stretch",
+      alignItems: "center",
+      backgroundColor: "#20E3E3",
+      paddingVertical: 5
+   },
+   buttonText: {
+      fontSize: 20,
+      fontWeight: "bold"
    }
 });
 

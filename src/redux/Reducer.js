@@ -1,10 +1,11 @@
-const initialState = { data: [] }
+const initialState = { data: {} }
 const Reducer = (state = initialState, action) => {
    switch (action.type) {
-      case "UPDATE_DATA":
-         return { data: state.data }
+      case "UPDATE_HOME_SCREEN_DATA":
+         return { data: action.data }
+      default:
+         return state
    }
-   return state
 }
 
 export default Reducer
